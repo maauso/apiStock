@@ -1,7 +1,6 @@
-package dfc
+package financialmodelingprep
 
 import (
-	getjsonresponse "apiStock/pkg/getJSONResponse"
 	"encoding/json"
 	"fmt"
 )
@@ -14,12 +13,12 @@ type discountedCashFlow struct {
 }
 
 // DiscountedCashFlow just get DFC info
-func DiscountedCashFlow(apikey string) {
-	responseData := getjsonresponse.GetResponse("https://financialmodelingprep.com/",
+func DiscountedCashFlow(company, apikey string) {
+	responseData := getResponse("https://financialmodelingprep.com/",
 		"api/v3/company/discounted-cash-flow/",
-		"AAPL",
-		"demo")
+		company,
+		apikey)
 	var dfc discountedCashFlow
-	json.Unmarshal([]byte(responseData), &dfc)
+	_ = json.Unmarshal(responseData, &dfc)
 	fmt.Printf("Symbol: %s \nDate: %s\n discountedCashFlow: %v\n StockPrice: %v\n", dfc.Symbol, dfc.Date, dfc.Dcf, dfc.StockPrice)
 }

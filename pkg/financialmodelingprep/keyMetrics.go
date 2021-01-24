@@ -1,7 +1,6 @@
-package keymetrics
+package financialmodelingprep
 
 import (
-	getjsonresponse "apiStock/pkg/getJSONResponse"
 	"encoding/json"
 	"fmt"
 )
@@ -69,15 +68,14 @@ type keyMetrics []struct {
 }
 
 // KeyMetrics by Company
-func KeyMetrics(apikey string) {
-	responseData := getjsonresponse.GetResponse("https://financialmodelingprep.com/",
+func KeyMetrics(company, apikey string) {
+	responseData := getResponse("https://financialmodelingprep.com/",
 		"api/v3/key-metrics/",
-		"AAPL",
-		"demo")
+		company,
+		apikey)
 	var km keyMetrics
-	json.Unmarshal([]byte(responseData), &km)
+	_ = json.Unmarshal(responseData, &km)
 	for _, value := range km {
 		fmt.Println(value.Date)
 	}
-
 }
