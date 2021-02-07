@@ -1,11 +1,11 @@
 package financialmodelingprep
 
 import (
-	structs "apiStock/model"
+	"apiStock/pkg/infrastructure/http/arguments"
 )
 
 // Fmg get metric apikey and company and get the request to financialmodelingprep
-func Fmg(p structs.Arguments) {
+func Fmg(p arguments.Arguments) {
 	switch p.Metric {
 	case "DiscountedCashFlow":
 		DiscountedCashFlow(p.Company, p.APIKey)
