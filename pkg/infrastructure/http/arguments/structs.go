@@ -1,4 +1,4 @@
-package structs
+package arguments
 
 // Arguments structure to initial arguments
 type Arguments struct {
