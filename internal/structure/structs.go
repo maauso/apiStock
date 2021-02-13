@@ -8,6 +8,7 @@ type Arguments struct {
 	APIKey   string
 }
 
+//DiscountCashFlow Json structure
 type DiscountCashFlow struct {
 	Symbol     string  `json:"symbol"`
 	Date       string  `json:"date"`
