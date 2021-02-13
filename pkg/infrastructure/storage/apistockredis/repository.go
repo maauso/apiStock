@@ -8,17 +8,17 @@ import (
 	"github.com/gomodule/redigo/redis"
 )
 
-//RedisRepository
+//RedisRepository for Redis
 type RedisRepository struct {
 	pool redis.Conn
 }
 
-//NewRedisRepository
+//NewRedisRepository for Redis
 func NewRedisRepository(pool redis.Conn) *RedisRepository {
 	return &RedisRepository{pool: pool}
 }
 
-//SaveData
+//SaveData in Redis
 func (r RedisRepository) SaveData(dfc structure.DiscountCashFlow) {
 	_, err := r.pool.Do("SET", dfc.Symbol, dfc.Dcf)
 	if err != nil {
