@@ -2,12 +2,13 @@ package selector
 
 import (
 	"apiStock/internal/application/financialmodelingprep"
-	"apiStock/pkg/infrastructure/http/arguments"
+	"apiStock/internal/domain/persistence"
+	"apiStock/internal/structure"
 )
 
 // GetMetric Case between different providers
-func GetMetric(p arguments.Arguments) {
+func GetMetric(p structure.Arguments, repo persistence.Repository) {
 	if p.Provider == "financialmodelingprep" {
-		financialmodelingprep.Fmg(arguments.Arguments{Metric: p.Metric, Company: p.Company, APIKey: p.APIKey})
+		financialmodelingprep.Fmg(structure.Arguments{Metric: p.Metric, Company: p.Company, APIKey: p.APIKey}, repo)
 	}
 }
