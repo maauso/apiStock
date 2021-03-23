@@ -1,33 +1,46 @@
 package apistockredis
 
 import (
-	"apiStock/internal/structure"
 	"fmt"
-	"log"
-
 	"github.com/gomodule/redigo/redis"
+	"github.com/zenthangplus/goccm"
+	"log"
 )
 
 //RedisRepository for Redis
 type RedisRepository struct {
-	pool redis.Conn
+	pool redis.Pool
 }
 
-//NewRedisRepository for Redis
-func NewRedisRepository(pool redis.Conn) *RedisRepository {
+func NewRedisRepository(pool redis.Pool) *RedisRepository {
 	return &RedisRepository{pool: pool}
 }
 
-//SaveData in Redis
-func (r RedisRepository) SaveData(dfc structure.DiscountCashFlow) {
-	_, err := r.pool.Do("SET", dfc.Symbol, dfc.Dcf)
-	if err != nil {
-		log.Fatal(err)
-	}
+//NewRedisRepository for Redis
 
-	s, err := redis.String(r.pool.Do("GET", dfc.Symbol))
+func (r RedisRepository) PopulateData(Sector, Symbol, CompanyName string, c goccm.ConcurrencyManager) {
+
+	conn := r.pool.Get()
+	exists, _ := redis.Bool(conn.Do("EXISTS", Sector+" "+Symbol))
+
+	if exists == false {
+		_, err := conn.Do("SET", Sector+" "+Symbol, CompanyName)
+		if err != nil {
+			log.Fatal(err)
+		}
+		fmt.Println("SAVING->" + Sector + " " + Symbol + ":" + CompanyName)
+	}
+	fmt.Printf("Worker %v: Started\n", Symbol)
+	fmt.Printf("Worker %v: Finished\n", Symbol)
+	conn.Close()
+	defer c.Done()
+}
+
+func (r RedisRepository) GetData() []string {
+	conn := r.pool.Get()
+	keys, err := redis.Strings(conn.Do("KEYS", "*"))
 	if err != nil {
 		log.Fatal(err)
 	}
-	fmt.Printf("%#v\n", s)
+	return keys
 }
