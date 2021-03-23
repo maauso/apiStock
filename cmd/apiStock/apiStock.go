@@ -1,13 +1,14 @@
 package main
 
 import (
+	"github.com/gomodule/redigo/redis"
+
 	"apiStock/internal/application/selector"
 	"apiStock/internal/domain/derefstring"
 	"apiStock/internal/domain/persistence"
 	"apiStock/internal/structure"
 	"apiStock/pkg/infrastructure/storage/apistockredis"
 	"flag"
-	"github.com/gomodule/redigo/redis"
 	"log"
 	"os"
 )
@@ -25,12 +26,12 @@ func main() {
 		os.Exit(1)
 	}
 
-	repo := initializeRepoPool()
+	repo := initializeRepo()
 	params := structure.Arguments{Provider: providerPtr, Metric: metricPtr, Company: companySymbolPtr, APIKey: apikeyPtr, ListOfCompanies: populateCompanies}
 	selector.GetMetric(params, repo)
 }
 
-func initializeRepoPool() persistence.Repository {
+func initializeRepo() persistence.Repository {
 	repo := newRedisRepository()
 	return repo
 }
