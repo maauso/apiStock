@@ -3,10 +3,10 @@ package financialmodelingprep
 import (
 	"apiStock/internal/domain/persistence"
 	"apiStock/internal/structure"
-	"encoding/json"
 	"github.com/zenthangplus/goccm"
-)
 
+	"encoding/json"
+)
 //PopulateCompanies get a group of companies
 func PopulateCompanies(apikey string, repo persistence.Repository) {
 	c := goccm.New(10)
