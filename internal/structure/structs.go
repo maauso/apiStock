@@ -17,6 +17,7 @@ type DiscountCashFlow struct {
 	StockPrice float64 `json:"Stock Price"`
 }
 
+//StockScreener json structure
 type StockScreener []struct {
 	Symbol             string  `json:"symbol"`
 	CompanyName        string  `json:"companyName"`

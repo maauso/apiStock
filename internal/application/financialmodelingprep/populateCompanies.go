@@ -7,9 +7,9 @@ import (
 	"github.com/zenthangplus/goccm"
 )
 
-//PopulateCompanies
+//PopulateCompanies get a group of companies
 func PopulateCompanies(apikey string, repo persistence.Repository) {
-	c := goccm.New(25)
+	c := goccm.New(10)
 	responseData := getResponseStockScreener("https://financialmodelingprep.com/api/v3/", "stock-screener", "Technology", apikey)
 	var screener structure.StockScreener
 	_ = json.Unmarshal(responseData, &screener)

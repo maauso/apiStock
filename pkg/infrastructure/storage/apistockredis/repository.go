@@ -1,9 +1,10 @@
 package apistockredis
 
 import (
-	"fmt"
 	"github.com/gomodule/redigo/redis"
 	"github.com/zenthangplus/goccm"
+
+	"fmt"
 	"log"
 )
 
@@ -12,18 +13,17 @@ type RedisRepository struct {
 	pool redis.Pool
 }
 
+//NewRedisRepository for Redis
 func NewRedisRepository(pool redis.Pool) *RedisRepository {
 	return &RedisRepository{pool: pool}
 }
 
-//NewRedisRepository for Redis
-
+//PopulateData Save data in Redis
 func (r RedisRepository) PopulateData(Sector, Symbol, CompanyName string, c goccm.ConcurrencyManager) {
-
 	conn := r.pool.Get()
 	exists, _ := redis.Bool(conn.Do("EXISTS", Sector+" "+Symbol))
 
-	if exists == false {
+	if !exists {
 		_, err := conn.Do("SET", Sector+" "+Symbol, CompanyName)
 		if err != nil {
 			log.Fatal(err)
@@ -32,10 +32,14 @@ func (r RedisRepository) PopulateData(Sector, Symbol, CompanyName string, c gocc
 	}
 	fmt.Printf("Worker %v: Started\n", Symbol)
 	fmt.Printf("Worker %v: Finished\n", Symbol)
-	conn.Close()
+	err := conn.Close()
+	if err != nil {
+		log.Fatal(err)
+	}
 	defer c.Done()
 }
 
+//GetData from Redis
 func (r RedisRepository) GetData() []string {
 	conn := r.pool.Get()
 	keys, err := redis.Strings(conn.Do("KEYS", "*"))
