@@ -4,7 +4,6 @@ import (
 	"github.com/gomodule/redigo/redis"
 
 	"apiStock/internal/application/selector"
-	"apiStock/internal/domain/derefstring"
 	"apiStock/internal/domain/persistence"
 	"apiStock/internal/structure"
 	"apiStock/pkg/infrastructure/storage/apistockredis"
@@ -14,20 +13,20 @@ import (
 )
 
 func main() {
-	providerPtr := derefstring.DerefString(flag.String("provider", "financialmodelingprep", "Select the provider [ financialmodelingprep ] (Required)"))
-	metricPtr := derefstring.DerefString(flag.String("metric", "UnderValuatedCompanies", "Metric { DiscountedCashFlow | HistoricalDiscountedCashFlow | KeyMetric | UnderValuatedCompanies };(Required)"))
-	companySymbolPtr := derefstring.DerefString(flag.String("company", "AAPL", "demo apikey"))
-	apikeyPtr := derefstring.DerefString(flag.String("apiKey", os.Getenv("apiKey"), "demo apikey"))
-	populateCompanies := derefstring.DerefString(flag.String("yes", "yes", "Populate companies Symbol"))
+	providerPtr := flag.String("provider", "", "Select the provider [ financialmodelingprep ] (Required)")
+	metricPtr := flag.String("metric", "", "Metric { DiscountedCashFlow | HistoricalDiscountedCashFlow | KeyMetric | UnderValuatedCompanies };(Required)")
+	companySymbolPtr := flag.String("company", "AAPL", "demo apikey")
+	apikeyPtr := flag.String("apiKey", os.Getenv("apiKey"), "demo apikey")
+	populateCompanies := flag.String("yes", "no", "Populate companies Symbol")
 	flag.Parse()
 
-	if providerPtr == "" || metricPtr == "" {
+	if *providerPtr == "" || *metricPtr == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
 
 	repo := initializeRepo()
-	params := structure.Arguments{Provider: providerPtr, Metric: metricPtr, Company: companySymbolPtr, APIKey: apikeyPtr, ListOfCompanies: populateCompanies}
+	params := structure.Arguments{Provider: *providerPtr, Metric: *metricPtr, Company: *companySymbolPtr, APIKey: *apikeyPtr, ListOfCompanies: *populateCompanies}
 	selector.GetMetric(params, repo)
 }
 

@@ -44,7 +44,7 @@ func (r RedisRepository) GetData() []string {
 	conn := r.pool.Get()
 	keys, err := redis.Strings(conn.Do("KEYS", "*"))
 	if err != nil {
-		log.Fatal(err)
+		log.Fatal("Error in GetData function: ", err)
 	}
 	return keys
 }
