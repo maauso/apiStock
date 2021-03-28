@@ -9,7 +9,7 @@ import (
 
 // getResponse Json response from API
 func getResponse(domain, endpoint, company, apikey string) []byte {
-	url := domain + endpoint + company + "?&apikey=" + apikey
+	url := domain + endpoint + company + "?apikey=" + apikey
 	fmt.Println(url)
 	response, err := http.Get(url)
 	if err != nil {

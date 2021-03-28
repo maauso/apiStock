@@ -10,7 +10,7 @@ type Arguments struct {
 }
 
 //DiscountCashFlow Json structure
-type DiscountCashFlow struct {
+type DiscountCashFlow []struct {
 	Symbol     string  `json:"symbol"`
 	Date       string  `json:"date"`
 	Dcf        float64 `json:"dcf"`

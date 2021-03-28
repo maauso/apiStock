@@ -14,9 +14,7 @@ func UnderValuatedCompanies(apikey string, repo persistence.Repository) {
 
 	for _, key := range symbols {
 		symbol := laststring.LastString(strings.Split(key, " "))
-		dfc := DiscountedCashFlow(symbol, apikey)
-		fmt.Println(dfc.Symbol)
-		fmt.Println(dfc.StockPrice)
-		fmt.Println(dfc.Dcf)
+		_ = DiscountedCashFlow(symbol, apikey)
+
 	}
 }
