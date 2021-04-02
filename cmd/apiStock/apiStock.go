@@ -8,25 +8,34 @@ import (
 	"apiStock/internal/structure"
 	"apiStock/pkg/infrastructure/storage/apistockredis"
 	"flag"
+	"fmt"
 	"log"
 	"os"
 )
 
 func main() {
-	providerPtr := flag.String("provider", "", "Select the provider [ financialmodelingprep ] (Required)")
-	metricPtr := flag.String("metric", "", "Metric { DiscountedCashFlow | HistoricalDiscountedCashFlow | KeyMetric | UnderValuatedCompanies };(Required)")
-	companySymbolPtr := flag.String("company", "AAPL", "demo apikey")
-	apikeyPtr := flag.String("apiKey", os.Getenv("apiKey"), "demo apikey")
+	providerPtr := flag.String("provider", "financialmodelingprep", "Select the provider [ financialmodelingprep ] (Required)")
+	metricPtr := flag.String("metric", "", "Metric { DiscountedCashFlow | UnderValuatedCompanies };(Required)")
+	companySymbolPtr := flag.String("company", "MSFT", "MSFT")
+	apikeyPtr := flag.String("apiKey", os.Getenv("apiKey"), "financialmodelingprep apikey (Required)")
 	populateCompanies := flag.String("yes", "no", "Populate companies Symbol")
+	marketCapPtr := flag.String("marketCap", "1000000000", "Market Capitalization ")
+	betaPtr := flag.String("beta", "1", "Company Beta")
+	sectorPtr := flag.String("sector", "Technology", "Company Sector: Consumer Cyclical - Energy - Technology - Industrials - Financial Services - Basic Materials - Communication Services - Consumer Defensive - Healthcare - Real Estate - Utilities - Industrial Goods - Financial - Services - Conglomerates ")
+	percentageOfGrowthPtr := flag.Float64("percentageOfGrowth", 10, "Set the minimum growth tha the company should have")
 	flag.Parse()
 
-	if *providerPtr == "" || *metricPtr == "" {
+	if *apikeyPtr == "" || *metricPtr == "" {
 		flag.PrintDefaults()
 		os.Exit(1)
 	}
+	if *metricPtr == "UnderValuatedCompanies" {
+		fmt.Println("Info: Be sure that you set marketCap, beta, sector")
+	}
 
 	repo := initializeRepo()
-	params := structure.Arguments{Provider: *providerPtr, Metric: *metricPtr, Company: *companySymbolPtr, APIKey: *apikeyPtr, ListOfCompanies: *populateCompanies}
+	underValuesParams := structure.NewUnderValuedArguments(marketCapPtr, betaPtr, sectorPtr)
+	params := structure.NewArguments(providerPtr, metricPtr, companySymbolPtr, apikeyPtr, populateCompanies, percentageOfGrowthPtr, *underValuesParams)
 	selector.GetMetric(params, repo)
 }
 

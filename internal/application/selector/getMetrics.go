@@ -7,8 +7,8 @@ import (
 )
 
 // GetMetric Case between different providers
-func GetMetric(p structure.Arguments, repo persistence.Repository) {
-	if p.Provider == "financialmodelingprep" {
-		financialmodelingprep.Fmg(structure.Arguments{Metric: p.Metric, Company: p.Company, APIKey: p.APIKey, ListOfCompanies: p.ListOfCompanies}, repo)
+func GetMetric(arguments *structure.Arguments, repo persistence.Repository) {
+	if *arguments.Provider == "financialmodelingprep" {
+		financialmodelingprep.Fmg(arguments, repo)
 	}
 }

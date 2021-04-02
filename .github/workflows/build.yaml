@@ -1,0 +1,27 @@
+name: Build and test Go
+on: pull_request
+env:
+  CMD_PATH: ./cmd/apiStock
+jobs:
+  build:
+    name: Build
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+         os: [ ubuntu-latest, windows-latest]
+    steps:
+      - name: Set up Go 1.15.8
+        uses: actions/setup-go@v1
+        with:
+          go-version: 1.15.8
+
+      - name: Check out source code
+        uses: actions/checkout@v1
+
+      - name: Build
+        run: |
+          go build -ldflags "-X main.apiKey=${{ secrets.APIKEY }}" cmd/apiStock/apiStock.go
+      - uses: actions/upload-artifact@master
+        with:
+          name: apiStock
+          path: apiStock*
