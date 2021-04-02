@@ -2,35 +2,28 @@ package structure
 
 // Arguments structure to initial arguments
 type Arguments struct {
-	Provider        string
-	Metric          string
-	Company         string
-	APIKey          string
-	ListOfCompanies string
+	Provider             *string
+	Metric               *string
+	Company              *string
+	APIKey               *string
+	ListOfCompanies      *string
+	PercentageOfGrowth   *float64
+	UnderValuedArguments UnderValuedArguments
 }
 
-//DiscountCashFlow Json structure
-type DiscountCashFlow []struct {
-	Symbol     string  `json:"symbol"`
-	Date       string  `json:"date"`
-	Dcf        float64 `json:"dcf"`
-	StockPrice float64 `json:"Stock Price"`
+// NewArguments constructor
+func NewArguments(provider *string, metric *string, company *string, APIKey *string, listOfCompanies *string, percentageOfGrowth *float64, underValuedArguments UnderValuedArguments) *Arguments {
+	return &Arguments{Provider: provider, Metric: metric, Company: company, APIKey: APIKey, ListOfCompanies: listOfCompanies, PercentageOfGrowth: percentageOfGrowth, UnderValuedArguments: underValuedArguments}
 }
 
-//StockScreener json structure
-type StockScreener []struct {
-	Symbol             string  `json:"symbol"`
-	CompanyName        string  `json:"companyName"`
-	MarketCap          int64   `json:"marketCap"`
-	Sector             string  `json:"sector"`
-	Industry           string  `json:"industry"`
-	Beta               float64 `json:"beta"`
-	Price              float64 `json:"price"`
-	LastAnnualDividend float64 `json:"lastAnnualDividend"`
-	Volume             int     `json:"volume"`
-	Exchange           string  `json:"exchange"`
-	ExchangeShortName  string  `json:"exchangeShortName"`
-	Country            string  `json:"country"`
-	IsEtf              bool    `json:"isEtf"`
-	IsActivelyTrading  bool    `json:"isActivelyTrading"`
+// UnderValuedArguments struct
+type UnderValuedArguments struct {
+	MarketCap *string
+	Beta      *string
+	Sector    *string
+}
+
+// NewUnderValuedArguments constructor
+func NewUnderValuedArguments(marketCap *string, beta *string, sector *string) *UnderValuedArguments {
+	return &UnderValuedArguments{MarketCap: marketCap, Beta: beta, Sector: sector}
 }
