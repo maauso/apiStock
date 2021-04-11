@@ -41,7 +41,7 @@ func UnderValuatedCompanies(arguments structure.Arguments, repo persistence.Repo
 	listOfCompanies := sb.String()
 	listOfCompanies = strings.TrimSuffix(listOfCompanies, ",")
 
-	dfc := DiscountedCashFlow(listOfCompanies, arguments)
+	dfc := DiscountedCashFlow(listOfCompanies, arguments, repo)
 	for _, value := range dfc {
 		growth := PercentageChanged(value.StockPrice, value.Dcf)
 		if growth >= *arguments.PercentageOfGrowth {

@@ -18,7 +18,6 @@ func main() {
 	metricPtr := flag.String("metric", "", "Metric { DiscountedCashFlow | UnderValuatedCompanies };(Required)")
 	companySymbolPtr := flag.String("company", "MSFT", "MSFT")
 	apikeyPtr := flag.String("apiKey", os.Getenv("apiKey"), "financialmodelingprep apikey (Required)")
-	populateCompanies := flag.String("yes", "no", "Populate companies Symbol")
 	marketCapPtr := flag.String("marketCap", "1000000000", "Market Capitalization ")
 	betaPtr := flag.String("beta", "1", "Company Beta")
 	sectorPtr := flag.String("sector", "Technology", "Company Sector: Consumer Cyclical - Energy - Technology - Industrials - Financial Services - Basic Materials - Communication Services - Consumer Defensive - Healthcare - Real Estate - Utilities - Industrial Goods - Financial - Services - Conglomerates ")
@@ -35,7 +34,7 @@ func main() {
 
 	repo := initializeRepo()
 	underValuesParams := structure.NewUnderValuedArguments(marketCapPtr, betaPtr, sectorPtr)
-	params := structure.NewArguments(providerPtr, metricPtr, companySymbolPtr, apikeyPtr, populateCompanies, percentageOfGrowthPtr, *underValuesParams)
+	params := structure.NewArguments(providerPtr, metricPtr, companySymbolPtr, apikeyPtr, percentageOfGrowthPtr, *underValuesParams)
 	selector.GetMetric(params, repo)
 }
 
@@ -46,7 +45,7 @@ func initializeRepo() persistence.Repository {
 
 func newRedisRepository() persistence.Repository {
 	pool := redis.Pool{
-		MaxActive:   1,
+		MaxActive:   10,
 		MaxIdle:     0,
 		IdleTimeout: 1,
 		Dial: func() (redis.Conn, error) {
