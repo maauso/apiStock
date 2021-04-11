@@ -1,15 +1,15 @@
 package financialmodelingprep
 
 import (
+	"apiStock/internal/arguments"
 	"apiStock/internal/domain/persistence"
-	"apiStock/internal/structure"
 	"encoding/json"
 	"fmt"
 	"log"
 	"strings"
 )
 
-type companiesFiltered []struct {
+type companyFiltered struct {
 	Symbol             string  `json:"symbol"`
 	CompanyName        string  `json:"companyName"`
 	MarketCap          float64 `json:"marketCap"`
@@ -26,11 +26,13 @@ type companiesFiltered []struct {
 	IsActivelyTrading  bool    `json:"isActivelyTrading"`
 }
 
-//UnderValuatedCompanies using dfc method and persistent storage
-func UnderValuatedCompanies(arguments structure.Arguments, repo persistence.Repository) {
+type companiesFiltered []companyFiltered
+
+//underValuatedCompanies using dfc method and persistent storage
+func underValuatedCompanies(arguments arguments.Arguments, repo persistence.Repository) {
 	var cf companiesFiltered
 	var sb strings.Builder
-	responseData := getResponseStockScreenerWithFilters(arguments)
+	responseData := getCompaniesStockScreener(arguments)
 	err := json.Unmarshal(responseData, &cf)
 	if err != nil {
 		log.Panic(err)
@@ -41,28 +43,17 @@ func UnderValuatedCompanies(arguments structure.Arguments, repo persistence.Repo
 	listOfCompanies := sb.String()
 	listOfCompanies = strings.TrimSuffix(listOfCompanies, ",")
 
-	dfc := DiscountedCashFlow(listOfCompanies, arguments)
-	for _, value := range dfc {
-		growth := PercentageChanged(value.StockPrice, value.Dcf)
+	groupOfDiscountedFlow := discountedCashFlowRecover(listOfCompanies, arguments, repo)
+	for _, dfc := range groupOfDiscountedFlow {
+		growth := dfc.PercentageChanged()
 		if growth >= *arguments.PercentageOfGrowth {
 			fmt.Printf(
 				"Symbol: %v, StockPrice: %v , DiscountCashFlowValue: %v,  Change : %0.2f %% \n\n",
-				value.Symbol,
-				value.StockPrice,
-				value.Dcf,
+				dfc.Symbol,
+				dfc.StockPrice,
+				dfc.Dcf,
 				growth,
 			)
 		}
 	}
-}
-
-// PercentageChanged - calculate the percent increase/decrease from two numbers.
-// ex. 60.0 is a 200.0% increase from 20.0
-func PercentageChanged(StockPrice float64, Dcf interface{}) float64 {
-	newDcf, err := Dcf.(float64)
-	if !err {
-		fmt.Printf("This values is a String")
-		return 0
-	}
-	return 100 * ((newDcf - StockPrice) / StockPrice)
 }

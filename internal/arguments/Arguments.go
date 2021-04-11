@@ -1,19 +1,20 @@
-package structure
+package arguments
 
-// Arguments structure to initial arguments
+//
+
+// Arguments Arguments to initial arguments
 type Arguments struct {
 	Provider             *string
 	Metric               *string
 	Company              *string
 	APIKey               *string
-	ListOfCompanies      *string
 	PercentageOfGrowth   *float64
 	UnderValuedArguments UnderValuedArguments
 }
 
 // NewArguments constructor
-func NewArguments(provider *string, metric *string, company *string, APIKey *string, listOfCompanies *string, percentageOfGrowth *float64, underValuedArguments UnderValuedArguments) *Arguments {
-	return &Arguments{Provider: provider, Metric: metric, Company: company, APIKey: APIKey, ListOfCompanies: listOfCompanies, PercentageOfGrowth: percentageOfGrowth, UnderValuedArguments: underValuedArguments}
+func NewArguments(provider *string, metric *string, company *string, APIKey *string, percentageOfGrowth *float64, underValuedArguments UnderValuedArguments) *Arguments {
+	return &Arguments{Provider: provider, Metric: metric, Company: company, APIKey: APIKey, PercentageOfGrowth: percentageOfGrowth, UnderValuedArguments: underValuedArguments}
 }
 
 // UnderValuedArguments struct
