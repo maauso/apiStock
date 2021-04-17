@@ -31,6 +31,7 @@ func getResponse(listOfCompanies string, arguments structure.Arguments) []byte {
 	return responseData
 }
 
+// Renombra esto añadiendo info de lo que hace y el endpoint
 func getResponseStockScreenerWithFilters(arguments structure.Arguments) []byte {
 	var (
 		url = "https://" + *arguments.Provider + ".com/api/v3/" + "stock-screener" +

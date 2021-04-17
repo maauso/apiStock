@@ -1,5 +1,7 @@
 package structure
 
+// Añade info sobre los tipos-
+
 // Arguments structure to initial arguments
 type Arguments struct {
 	Provider             *string
