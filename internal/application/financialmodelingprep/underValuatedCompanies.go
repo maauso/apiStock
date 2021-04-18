@@ -45,7 +45,7 @@ func underValuatedCompanies(arguments arguments.Arguments, repo persistence.Repo
 
 	groupOfDiscountedFlow := discountedCashFlowRecover(listOfCompanies, arguments, repo)
 	for _, dfc := range groupOfDiscountedFlow {
-		growth := dfc.PercentageChanged()
+		growth := dfc.percentageChanged()
 		if growth >= *arguments.PercentageOfGrowth {
 			fmt.Printf(
 				"Symbol: %v, StockPrice: %v , DiscountCashFlowValue: %v,  Change : %0.2f %% \n\n",
