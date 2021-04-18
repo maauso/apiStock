@@ -51,30 +51,11 @@ func (r *RedisRepository) PopulateUnderValuatedCompanies(Symbol string, Percenta
 	defer c.Done()
 }
 
-// GetData from Redis
-func (r *RedisRepository) CompanyExists(listOfElements string) bool {
-	conn := r.pool.Get()
-	fmt.Printf("Numero de conexiones activas: %v", r.pool.ActiveCount())
-	key, err := redis.Bool(conn.Do("EXISTS", listOfElements))
-	if err != nil {
-		log.Fatal("Error in CompanyExists function: ", err)
-	}
-	err = conn.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return key
-}
-
-func (r *RedisRepository) GetTotalCompanies(listOfElements string) float64 {
+// GetTotalCompanies get company value from repository
+func (r *RedisRepository) GetTotalCompanies(listOfElements string) (float64, error) {
 	conn := r.pool.Get()
 	key, err := redis.Float64(conn.Do("GET", listOfElements))
-	if err != nil {
-		log.Fatal("Error in CompanyExists function: ", err)
-	}
-	err = conn.Close()
-	if err != nil {
-		log.Fatal(err)
-	}
-	return key
+
+	defer conn.Close()
+	return key, err
 }

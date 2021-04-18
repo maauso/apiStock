@@ -12,5 +12,3 @@ func GetMetric(arguments *arguments.Arguments, repo persistence.Repository) {
 		financialmodelingprep.Fmg(arguments, repo)
 	}
 }
-
-// La idea es que a la funcion final le lleguen unicamente los parametros que le hacen falta, aunque le llegue el string directamente.
