@@ -18,12 +18,18 @@ type DiscountCashFlow struct {
 
 type DiscountCashFlows []DiscountCashFlow
 
-	for _, v := range *d {
-		if v.StockPrice > 10 {
-			top3 = append(top3, v)
-		}
+// PercentageChanged - calculate the percent increase/decrease from two numbers.
+// ex. 60.0 is a 200.0% increase from 20.0
+
+// La idea es que la iteraciones con la estructura se realicen a través de metodos, en este caso PercentageChanged se encarga de interactuar
+//con los datos de DiscountCashFlow por lo que tiene sentido que 1: esté en el mismo sitio que está la estructura y tenga un metodo tipo estructura
+func (d *DiscountCashFlow) PercentageChanged() float64 {
+	newDcf, err := d.Dcf.(float64)
+	if !err {
+		fmt.Printf("This values is a String")
+		return 0
 	}
-	return top3
+	return 100 * ((newDcf - d.StockPrice) / d.StockPrice)
 }
 
 // DiscountedCashFlowRetriever just get DFC info
@@ -54,8 +60,8 @@ func DiscountedCashFlowRetriever(listOfCompanies string, arguments structure.Arg
 	return dfc
 }
 
-func getDiscountedCashFlowValues(newList string, arguments structure.Arguments) DiscountCashFlow {
-	var dfc DiscountCashFlow
+func getDiscountedCashFlowValues(newList string, arguments structure.Arguments) DiscountCashFlows {
+	var dfc DiscountCashFlows
 	fmt.Printf("Number of companies that we are checking:  %v\n", len(newList))
 	responseData := getResponse(
 		newList,

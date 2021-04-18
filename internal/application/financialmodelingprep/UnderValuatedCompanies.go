@@ -41,28 +41,17 @@ func UnderValuatedCompanies(arguments structure.Arguments, repo persistence.Repo
 	listOfCompanies := sb.String()
 	listOfCompanies = strings.TrimSuffix(listOfCompanies, ",")
 
-	dfc := DiscountedCashFlow(listOfCompanies, arguments, repo)
-	for _, value := range dfc {
-		growth := PercentageChanged(value.StockPrice, value.Dcf)
+	dfcs := DiscountedCashFlowRetriever(listOfCompanies, arguments, repo)
+	for _, dfc := range dfcs {
+		growth := dfc.PercentageChanged()
 		if growth >= *arguments.PercentageOfGrowth {
 			fmt.Printf(
 				"Symbol: %v, StockPrice: %v , DiscountCashFlowValue: %v,  Change : %0.2f %% \n\n",
-				value.Symbol,
-				value.StockPrice,
-				value.Dcf,
+				dfc.Symbol,
+				dfc.StockPrice,
+				dfc.Dcf,
 				growth,
 			)
 		}
 	}
-}
-
-// PercentageChanged - calculate the percent increase/decrease from two numbers.
-// ex. 60.0 is a 200.0% increase from 20.0
-func PercentageChanged(StockPrice float64, Dcf interface{}) float64 {
-	newDcf, err := Dcf.(float64)
-	if !err {
-		fmt.Printf("This values is a String")
-		return 0
-	}
-	return 100 * ((newDcf - StockPrice) / StockPrice)
 }

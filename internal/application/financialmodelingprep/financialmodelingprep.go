@@ -9,7 +9,7 @@ import (
 func Fmg(arguments *structure.Arguments, repo persistence.Repository) {
 	switch *arguments.Metric {
 	case "DiscountedCashFlow":
-		DiscountedCashFlow(*arguments.Company, *arguments, repo)
+		DiscountedCashFlowRetriever(*arguments.Company, *arguments, repo)
 	case "UnderValuatedCompanies":
 		UnderValuatedCompanies(*arguments, repo)
 	}

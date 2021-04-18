@@ -19,7 +19,7 @@ func NewRedisRepository(pool redis.Pool) *RedisRepository {
 }
 
 // PopulateData Save data in Redis
-func (r RedisRepository) PopulateData(Symbol string, DiscountCashFlow interface{}, c goccm.ConcurrencyManager) {
+func (r *RedisRepository) PopulateData(Symbol string, DiscountCashFlow interface{}, c goccm.ConcurrencyManager) {
 	conn := r.pool.Get()
 	_, err := conn.Do("SET", Symbol, DiscountCashFlow)
 	if err != nil {
@@ -36,7 +36,7 @@ func (r RedisRepository) PopulateData(Symbol string, DiscountCashFlow interface{
 }
 
 // PopulateUnderValuatedCompanies to be implemented soon
-func (r RedisRepository) PopulateUnderValuatedCompanies(Symbol string, Percentage float64, c goccm.ConcurrencyManager) {
+func (r *RedisRepository) PopulateUnderValuatedCompanies(Symbol string, Percentage float64, c goccm.ConcurrencyManager) {
 	conn := r.pool.Get()
 	_, err := conn.Do("SET", "UnderValuated"+Symbol, Percentage)
 	if err != nil {
@@ -52,12 +52,12 @@ func (r RedisRepository) PopulateUnderValuatedCompanies(Symbol string, Percentag
 }
 
 // GetData from Redis
-func (r RedisRepository) KeyExist(listOfElements string) bool {
+func (r *RedisRepository) CompanyExists(listOfElements string) bool {
 	conn := r.pool.Get()
 	fmt.Printf("Numero de conexiones activas: %v", r.pool.ActiveCount())
 	key, err := redis.Bool(conn.Do("EXISTS", listOfElements))
 	if err != nil {
-		log.Fatal("Error in KeyExist function: ", err)
+		log.Fatal("Error in CompanyExists function: ", err)
 	}
 	err = conn.Close()
 	if err != nil {
@@ -66,11 +66,11 @@ func (r RedisRepository) KeyExist(listOfElements string) bool {
 	return key
 }
 
-func (r RedisRepository) GetValue(listOfElements string) float64 {
+func (r *RedisRepository) GetTotalCompanies(listOfElements string) float64 {
 	conn := r.pool.Get()
 	key, err := redis.Float64(conn.Do("GET", listOfElements))
 	if err != nil {
-		log.Fatal("Error in KeyExist function: ", err)
+		log.Fatal("Error in CompanyExists function: ", err)
 	}
 	err = conn.Close()
 	if err != nil {

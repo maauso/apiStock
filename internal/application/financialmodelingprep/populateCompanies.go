@@ -23,8 +23,7 @@ import (
 //	IsActivelyTrading  bool    `json:"isActivelyTrading"`
 //}
 
-//Populator get a group of companies
-func Populator(dfc DiscountCashFlow, repo persistence.Repository) {
+func Populator(dfc DiscountCashFlows, repo persistence.Repository) {
 	c := goccm.New(10)
 	for _, value := range dfc {
 		c.Wait()
