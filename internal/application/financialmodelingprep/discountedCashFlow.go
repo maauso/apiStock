@@ -16,8 +16,7 @@ type DiscountCashFlow struct {
 	StockPrice float64     `json:"Stock Price"`
 }
 
-// DiscountedCashFlow just get DFC info
-func DiscountedCashFlow(listOfCompanies string, arguments structure.Arguments, repo persistence.Repository) DiscountCashFlow {
+type DiscountCashFlows []DiscountCashFlow
 
 	for _, v := range *d {
 		if v.StockPrice > 10 {
@@ -34,9 +33,9 @@ func DiscountedCashFlowRetriever(listOfCompanies string, arguments structure.Arg
 	var dfc DiscountCashFlows
 	//lof := strings.Split(listOfCompanies, ",")
 	//for _, v := range lof {
-	//	if repo.ComanyExists(v) {
+	//	if repo.CompanyExists(v) {
 	//		fmt.Printf("El valor %s está en Redis\n\n", v)
-	//		DiscountedCashFlowValue := repo.GetTotalComanies(v)
+	//		DiscountedCashFlowValue := repo.GetTotalCompanies(v)
 	//		fmt.Printf("El valor para %v es %v ", v, DiscountedCashFlowValue)
 	//	} else {
 	//		sb.WriteString(v + ",")
@@ -50,7 +49,7 @@ func DiscountedCashFlowRetriever(listOfCompanies string, arguments structure.Arg
 		for _, value := range dfc {
 			fmt.Printf("Company: %s, Value: %v, DiscountedCashFlowValue: %s", value.Symbol, value.StockPrice, value.Dcf)
 		}
-		repo.Populator(dfc)
+		Populator(dfc, repo)
 	}
 	return dfc
 }
