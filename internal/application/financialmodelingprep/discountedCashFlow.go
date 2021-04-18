@@ -35,24 +35,26 @@ func (d *discountCashFlow) percentageChanged() float64 {
 // DiscountedCashFlowRecover: Recover from redis or financialmodelinggrep the Dcf value
 func discountedCashFlowRecover(listOfCompanies string, arguments arguments.Arguments, repo persistence.Repository) discountCashFlows {
 
-	var sb strings.Builder
 	var dfc discountCashFlows
+	var sb strings.Builder
 	lof := strings.Split(listOfCompanies, ",")
-	companiesChannel := make(chan string, len(lof))
-	c := goccm.New(2)
+	companiesChannel := make(chan string, 1000)
+	c := goccm.New(10)
 
+	fmt.Printf("Worker %v: Started\n", c.RunningCount())
 	for _, v := range lof {
 		c.Wait()
 		go repo.GetTotalCompanies(v, companiesChannel, c)
 	}
 
-	v := <-companiesChannel
-
-	fmt.Println("Compañias en cola", v)
-
-	sb.WriteString(v + ",")
-
+	for len(companiesChannel) > 0 {
+		fmt.Printf("Elementos en la cola %v \n", len(companiesChannel))
+		sb.WriteString(<-companiesChannel + ",")
+	}
 	newList := sb.String()
+	fmt.Printf("Nueva lista %v\n", newList)
+	fmt.Printf("Worker %v: Finished\n", c.RunningCount())
+
 	//c.WaitAllDone()
 	if len(newList) > 0 {
 
@@ -65,7 +67,7 @@ func discountedCashFlowRecover(listOfCompanies string, arguments arguments.Argum
 		populator(dfc, repo, c)
 	}
 	fmt.Printf("Routines running, %v", c.RunningCount())
-	//c.WaitAllDone()
+
 	return dfc
 }
 

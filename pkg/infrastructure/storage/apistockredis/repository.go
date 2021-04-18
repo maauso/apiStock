@@ -54,9 +54,8 @@ func (r *RedisRepository) PopulateUnderValuatedCompanies(Symbol string, Percenta
 // GetTotalCompanies get company value from repository
 func (r *RedisRepository) GetTotalCompanies(listOfElements string, companiesChannel chan<- string, c goccm.ConcurrencyManager) {
 	conn := r.pool.Get()
-	value, err := redis.Float64(conn.Do("GET", listOfElements))
+	_, err := redis.Float64(conn.Do("GET", listOfElements))
 	if err == nil {
-		fmt.Printf("El valor para %v es %v \n", listOfElements, value)
 	} else {
 		companiesChannel <- listOfElements
 	}
@@ -64,5 +63,7 @@ func (r *RedisRepository) GetTotalCompanies(listOfElements string, companiesChan
 	if err != nil {
 		log.Fatal(err)
 	}
+	fmt.Printf("Elementos en la cola %v \n", len(companiesChannel))
 	defer c.Done()
+
 }
