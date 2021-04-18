@@ -7,6 +7,8 @@ import (
 	"fmt"
 	"log"
 	"strings"
+
+	"github.com/zenthangplus/goccm"
 )
 
 // discountCashFlow Json arguments
@@ -36,17 +38,22 @@ func discountedCashFlowRecover(listOfCompanies string, arguments arguments.Argum
 	var sb strings.Builder
 	var dfc discountCashFlows
 	lof := strings.Split(listOfCompanies, ",")
+	companiesChannel := make(chan string, len(lof))
+	c := goccm.New(2)
 
 	for _, v := range lof {
-		DiscountedCashFlowValue, err := repo.GetTotalCompanies(v)
-		if err == nil {
-			fmt.Printf("El valor para %v es %v \n", v, DiscountedCashFlowValue)
-		} else {
-			sb.WriteString(v + ",")
-		}
+		c.Wait()
+		go repo.GetTotalCompanies(v, companiesChannel, c)
 	}
 
+	v := <-companiesChannel
+
+	fmt.Println("Compañias en cola", v)
+
+	sb.WriteString(v + ",")
+
 	newList := sb.String()
+	//c.WaitAllDone()
 	if len(newList) > 0 {
 
 		dfc = getDiscountedCashFlowValues(newList, arguments)
@@ -54,8 +61,11 @@ func discountedCashFlowRecover(listOfCompanies string, arguments arguments.Argum
 		for _, value := range dfc {
 			fmt.Printf("Company: %s, Value: %v, DiscountedCashFlowValue: %s \n", value.Symbol, value.StockPrice, value.Dcf)
 		}
-		populator(dfc, repo)
+		fmt.Printf("1- Routines running, %v", c.RunningCount())
+		populator(dfc, repo, c)
 	}
+	fmt.Printf("Routines running, %v", c.RunningCount())
+	c.WaitAllDone()
 	return dfc
 }
 

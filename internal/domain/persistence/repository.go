@@ -9,5 +9,5 @@ type Repository interface {
 	PopulateData(Symbol string, DiscountCashFlow interface{}, c goccm.ConcurrencyManager)
 
 	PopulateUnderValuatedCompanies(Symbol string, Percentage float64, c goccm.ConcurrencyManager)
-	GetTotalCompanies(listOfCompanyNames string) (float64, error)
+	GetTotalCompanies(listOfCompanyNames string, companiesChannel chan<- string, c goccm.ConcurrencyManager)
 }
