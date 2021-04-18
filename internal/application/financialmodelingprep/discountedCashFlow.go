@@ -65,7 +65,7 @@ func discountedCashFlowRecover(listOfCompanies string, arguments arguments.Argum
 		populator(dfc, repo, c)
 	}
 	fmt.Printf("Routines running, %v", c.RunningCount())
-	c.WaitAllDone()
+	//c.WaitAllDone()
 	return dfc
 }
 
